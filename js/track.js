@@ -2,35 +2,57 @@ import { db } from "./firebase.js";
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 window.trackOrder = async function(){
-  const phone = document.getElementById('phone').value.trim();
-  const orderId = document.getElementById('orderId').value.trim();
-  let q;
-  if(orderId) {
-    q = query(collection(db, "orders"), where("paymentId","==",orderId));
-  } else {
-    q = query(collection(db, "orders"), where("phone","==",phone));
-  }
+  try {
+    const phone = document.getElementById('phone').value.trim();
+    const orderId = document.getElementById('orderId').value.trim();
+    
+    if(!phone && !orderId) return alert('Please enter phone number or order ID');
+    
+    let q;
+    if(orderId) {
+      q = query(collection(db, "orders"), where("paymentId","==",orderId));
+    } else {
+      q = query(collection(db, "orders"), where("phone","==",phone));
+    }
 
-  const snapshot = await getDocs(q);
-  result.innerHTML = "";
-  if(snapshot.empty){
-    result.innerHTML = "❌ No order found";
-    return;
-  }
+    const snapshot = await getDocs(q);
+    result.innerHTML = "";
+    if(snapshot.empty){
+      result.textContent = "❌ No order found";
+      return;
+    }
 
-  snapshot.forEach(doc => renderOrder(doc.data()));
+    snapshot.forEach(doc => renderOrder(doc.data()));
+  } catch(e) {
+    console.error(e);
+    result.textContent = "Error tracking order: " + (e.message || 'Unknown error');
+  }
 };
 
 function renderOrder(o){
-  let itemsHTML = "";
-  (o.items||[]).forEach(p => itemsHTML += `<li>${p.name} - ₹${p.price}</li>`);
-
-  result.innerHTML = `
-    <div style="border:1px solid #ccc;padding:15px">
-      <h3>Order ID: ${o.paymentId || 'N/A'}</h3>
-      <p>Status: <b>${o.orderStatus || o.status || 'Pending'}</b></p>
-      <p>Total: ₹${o.total}</p>
-      <ul>${itemsHTML}</ul>
-    </div>
-  `;
+  const container = document.createElement('div');
+  container.style.cssText = 'border:1px solid #ccc;padding:15px';
+  
+  const h3 = document.createElement('h3');
+  h3.textContent = 'Order ID: ' + (o.paymentId || 'N/A');
+  
+  const status = document.createElement('p');
+  status.innerHTML = 'Status: <b>' + (o.orderStatus || o.status || 'Pending') + '</b>';
+  
+  const total = document.createElement('p');
+  total.textContent = 'Total: ₹' + (o.total || 0);
+  
+  const ul = document.createElement('ul');
+  (o.items || []).forEach(p => {
+    const li = document.createElement('li');
+    li.textContent = (p.name || 'Item') + ' - ₹' + (p.price || 0);
+    ul.appendChild(li);
+  });
+  
+  container.appendChild(h3);
+  container.appendChild(status);
+  container.appendChild(total);
+  container.appendChild(ul);
+  result.innerHTML = '';
+  result.appendChild(container);
 }

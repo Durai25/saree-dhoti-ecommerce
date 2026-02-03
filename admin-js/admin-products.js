@@ -28,60 +28,111 @@ const productsRef = collection(db, "products");
     snap.forEach(d => {
       const p = d.data();
       const id = d.id;
-
-      list.innerHTML += `
-        <div class="product" style="border:1px solid #ddd;padding:10px;margin-bottom:8px">
-          <img src="${p.image||''}" width="80" style="display:block;margin-bottom:6px;">
-          <input id="name_${id}" value="${p.name||''}">
-          <input id="price_${id}" type="number" value="${p.price||0}">
-          <input id="category_${id}" value="${p.category||''}">
-          <input id="stock_${id}" type="number" value="${p.stock||0}">
-          <input id="imgfile_${id}" type="file" accept="image/*">
-          <br>
-          <button onclick="updateProduct('${id}')">Update</button>
-          <button onclick="deleteProduct('${id}')">Delete</button>
-        </div>
-      `;
+      
+      const div = document.createElement('div');
+      div.style.cssText = 'border:1px solid #ddd;padding:10px;margin-bottom:8px';
+      
+      const img = document.createElement('img');
+      img.src = p.image || '';
+      img.width = 80;
+      img.style.display = 'block';
+      img.style.marginBottom = '6px';
+      
+      const nameInput = document.createElement('input');
+      nameInput.id = `name_${id}`;
+      nameInput.value = p.name || '';
+      nameInput.placeholder = 'Product Name';
+      
+      const priceInput = document.createElement('input');
+      priceInput.id = `price_${id}`;
+      priceInput.type = 'number';
+      priceInput.value = p.price || 0;
+      priceInput.placeholder = 'Price';
+      
+      const categoryInput = document.createElement('input');
+      categoryInput.id = `category_${id}`;
+      categoryInput.value = p.category || '';
+      categoryInput.placeholder = 'Category';
+      
+      const stockInput = document.createElement('input');
+      stockInput.id = `stock_${id}`;
+      stockInput.type = 'number';
+      stockInput.value = p.stock || 0;
+      stockInput.placeholder = 'Stock';
+      
+      const fileInput = document.createElement('input');
+      fileInput.id = `imgfile_${id}`;
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      
+      const br = document.createElement('br');
+      
+      const updateBtn = document.createElement('button');
+      updateBtn.textContent = 'Update';
+      updateBtn.onclick = () => updateProduct(id);
+      
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.onclick = () => deleteProduct(id);
+      
+      div.appendChild(img);
+      div.appendChild(nameInput);
+      div.appendChild(priceInput);
+      div.appendChild(categoryInput);
+      div.appendChild(stockInput);
+      div.appendChild(fileInput);
+      div.appendChild(br);
+      div.appendChild(updateBtn);
+      div.appendChild(deleteBtn);
+      list.appendChild(div);
     });
   });
 })();
 
 window.addProduct = async function(){
-  const name = document.getElementById('pname').value.trim();
-  const price = Number(document.getElementById('price').value || 0);
-  const category = document.getElementById('category').value.trim();
-  const stock = Number(document.getElementById('stock').value || 0);
-  const file = document.getElementById('imageFile').files[0];
+  try {
+    const name = document.getElementById('pname').value.trim();
+    const price = Number(document.getElementById('price').value || 0);
+    const category = document.getElementById('category').value.trim();
+    const stock = Number(document.getElementById('stock').value || 0);
+    const file = document.getElementById('imageFile').files[0];
 
-  if(!name || !price) return alert('Please enter name and price');
+    if(!name || !price) return alert('Please enter name and price');
+    if(price <= 0) return alert('Price must be positive');
+    if(stock < 0) return alert('Stock cannot be negative');
+    if(file && file.size > 5 * 1024 * 1024) return alert('Image must be less than 5MB');
 
-  let imageUrl = '';
-  let imagePath = '';
-  if(file){
-    const path = `products/${Date.now()}_${file.name}`;
-    const sRef = storageRef(storage, path);
-    await uploadBytes(sRef, file);
-    imageUrl = await getDownloadURL(sRef);
-    imagePath = path; // store the storage path for later deletion
+    let imageUrl = '';
+    let imagePath = '';
+    if(file){
+      if(!file.type.startsWith('image/')) return alert('Please select a valid image file');
+      const path = `products/${Date.now()}_${Date.now()}`;
+      const sRef = storageRef(storage, path);
+      await uploadBytes(sRef, file);
+      imageUrl = await getDownloadURL(sRef);
+      imagePath = path;
+    }
+
+    await addDoc(productsRef, {
+      name,
+      price,
+      category,
+      stock,
+      image: imageUrl,
+      imagePath: imagePath,
+      createdAt: new Date()
+    });
+
+    alert('Product added');
+    document.getElementById('pname').value = '';
+    document.getElementById('price').value = '';
+    document.getElementById('category').value = '';
+    document.getElementById('stock').value = '';
+    document.getElementById('imageFile').value = '';
+  } catch(e) {
+    console.error(e);
+    alert('Failed to add product: ' + (e.message || 'Unknown error'));
   }
-
-  await addDoc(productsRef, {
-    name,
-    price,
-    category,
-    stock,
-    image: imageUrl,
-    imagePath: imagePath,
-    createdAt: new Date()
-  });
-
-  alert('Product added');
-  // clear inputs
-  document.getElementById('pname').value = '';
-  document.getElementById('price').value = '';
-  document.getElementById('category').value = '';
-  document.getElementById('stock').value = '';
-  document.getElementById('imageFile').value = '';
 };
 
 window.updateProduct = async function(id){
@@ -92,11 +143,16 @@ window.updateProduct = async function(id){
     const stock = Number(document.getElementById(`stock_${id}`).value || 0);
     const file = document.getElementById(`imgfile_${id}`).files[0];
 
+    if(!name || !price) return alert('Name and price are required');
+    if(price <= 0) return alert('Price must be positive');
+    if(stock < 0) return alert('Stock cannot be negative');
+    if(file && file.size > 5 * 1024 * 1024) return alert('Image must be less than 5MB');
+    if(file && !file.type.startsWith('image/')) return alert('Please select a valid image file');
+
     const docRef = doc(db, 'products', id);
     const payload = { name, price, category, stock };
 
     if(file){
-      // delete previous image if exists
       try{
         const cur = await getDoc(docRef);
         if(cur.exists() && cur.data().imagePath){
@@ -105,7 +161,7 @@ window.updateProduct = async function(id){
         }
       }catch(e){ console.warn('Could not fetch current product for image cleanup', e); }
 
-      const path = `products/${Date.now()}_${file.name}`;
+      const path = `products/${Date.now()}_${Date.now()}`;
       const sRef = storageRef(storage, path);
       await uploadBytes(sRef, file);
       payload.image = await getDownloadURL(sRef);
@@ -113,10 +169,10 @@ window.updateProduct = async function(id){
     }
 
     await updateDoc(docRef, payload);
-    alert('Updated');
+    alert('Product updated');
   } catch (e) {
     console.error(e);
-    alert('Update failed');
+    alert('Update failed: ' + (e.message || 'Unknown error'));
   }
 };
 

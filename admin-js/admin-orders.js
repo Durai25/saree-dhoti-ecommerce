@@ -5,27 +5,52 @@ onSnapshot(collection(db, "orders"), snap => {
   orders.innerHTML = "";
   snap.forEach(o => {
     const d = o.data();
-    orders.innerHTML += `
-      <div style="border:1px solid #ccc;padding:10px;margin-bottom:8px">
-        <b>${d.customerName}</b> | ₹${d.total}<br>
-        ${d.phone}<br>
-        Payment: ${d.paymentStatus || 'N/A'}<br>
-        Status: ${d.orderStatus || 'Pending'}
-        <br>
-        <select onchange="updateStatus('${o.id}', this.value)">
-          <option ${d.orderStatus==='Pending'?'selected':''}>Pending</option>
-          <option ${d.orderStatus==='Packed'?'selected':''}>Packed</option>
-          <option ${d.orderStatus==='Shipped'?'selected':''}>Shipped</option>
-          <option ${d.orderStatus==='Delivered'?'selected':''}>Delivered</option>
-        </select>
-        <button onclick="downloadInvoice('${o.id}')">Download Invoice</button>
-      </div>
-    `;
+    const div = document.createElement('div');
+    div.style.cssText = 'border:1px solid #ccc;padding:10px;margin-bottom:8px';
+    
+    const name = document.createElement('b');
+    name.textContent = d.customerName || 'Unknown';
+    
+    const info = document.createElement('div');
+    info.textContent = '₹' + (d.total || 0) + ' | ' + (d.phone || 'N/A');
+    
+    const payment = document.createElement('div');
+    payment.textContent = 'Payment: ' + (d.paymentStatus || 'N/A');
+    
+    const statusLabel = document.createElement('div');
+    statusLabel.textContent = 'Status: ' + (d.orderStatus || 'Pending');
+    
+    const select = document.createElement('select');
+    ['Pending', 'Packed', 'Shipped', 'Delivered'].forEach(st => {
+      const opt = document.createElement('option');
+      opt.value = st;
+      opt.textContent = st;
+      opt.selected = (d.orderStatus === st);
+      select.appendChild(opt);
+    });
+    select.onchange = (e) => updateStatus(o.id, e.target.value);
+    
+    const btn = document.createElement('button');
+    btn.textContent = 'Download Invoice';
+    btn.onclick = () => downloadInvoice(o.id);
+    
+    div.appendChild(name);
+    div.appendChild(info);
+    div.appendChild(payment);
+    div.appendChild(statusLabel);
+    div.appendChild(select);
+    div.appendChild(btn);
+    orders.appendChild(div);
   });
 });
 
 window.updateStatus = async function(id, status){
-  await updateDoc(doc(db, "orders", id), { orderStatus: status });
+  try {
+    await updateDoc(doc(db, "orders", id), { orderStatus: status });
+  } catch(e) {
+    console.error(e);
+    alert('Failed to update status: ' + (e.message || 'Unknown error'));
+  }
 };
 
 window.downloadInvoice = async function(id){
@@ -35,5 +60,8 @@ window.downloadInvoice = async function(id){
     const order = snap.data();
     const m = await import('../js/invoice.js');
     m.generateInvoice(order);
-  } catch(e){ console.error(e); alert('Download failed'); }
+  } catch(e){ 
+    console.error(e); 
+    alert('Download failed: ' + (e.message || 'Unknown error')); 
+  }
 };

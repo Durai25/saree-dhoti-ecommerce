@@ -14,27 +14,45 @@ try{
 
     snap.forEach(doc => {
       const p = doc.data();
-
-      productBox.innerHTML += `
-        <div class="product">
-          <img src="${p.image}">
-          <h3>${p.name}</h3>
-          <p class="price">₹${p.price}</p>
-          <p class="stock ${p.stock>0? '':'out'}">${p.stock>0? 'In Stock':'Out of Stock'}</p>
-          <div class="actions">
-            <button ${p.stock<=0?"disabled":""}
-              onclick="addToCart({
-                id:'${doc.id}',
-                name:'${p.name}',
-                price:${Number(p.price)},
-                stock:${p.stock},
-                image:'${p.image||''}'
-              })">
-              Add to Cart
-            </button>
-          </div>
-        </div>
-      `;
+      const productDiv = document.createElement('div');
+      productDiv.className = 'product';
+      
+      const img = document.createElement('img');
+      img.src = p.image || '';
+      img.alt = p.name || 'Product';
+      
+      const name = document.createElement('h3');
+      name.textContent = p.name || 'Unknown';
+      
+      const price = document.createElement('p');
+      price.className = 'price';
+      price.textContent = '₹' + (p.price || 0);
+      
+      const stock = document.createElement('p');
+      stock.className = 'stock ' + (p.stock > 0 ? '' : 'out');
+      stock.textContent = p.stock > 0 ? 'In Stock' : 'Out of Stock';
+      
+      const btn = document.createElement('button');
+      btn.disabled = p.stock <= 0;
+      btn.textContent = 'Add to Cart';
+      btn.onclick = () => addToCart({
+        id: doc.id,
+        name: p.name,
+        price: Number(p.price),
+        stock: p.stock,
+        image: p.image || ''
+      });
+      
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+      actions.appendChild(btn);
+      
+      productDiv.appendChild(img);
+      productDiv.appendChild(name);
+      productDiv.appendChild(price);
+      productDiv.appendChild(stock);
+      productDiv.appendChild(actions);
+      productBox.appendChild(productDiv);
     });
   });
 }catch(e){

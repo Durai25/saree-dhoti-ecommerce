@@ -1,5 +1,5 @@
 import { db } from "./firebase.js";
-import { addDoc, collection } from
+import { addDoc, collection, writeBatch, doc, getDoc } from
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 window.payNow = async function(){
@@ -23,7 +23,7 @@ window.payNow = async function(){
     const amountPaise = total * 100;
 
     const options = {
-      key: "RAZORPAY_KEY",
+      key: "B3FcI6vjB5rNl2VOgYk4lvnA",
       amount: amountPaise,
       currency: "INR",
       name: "Saree & Dhoti Store",
@@ -32,39 +32,49 @@ window.payNow = async function(){
       handler: async function(res){
         if(!res || !res.razorpay_payment_id) return alert('Payment not verified');
 
-        const order = {
-          customerName,
-          phone,
-          address,
-          items: cart,
-          total,
-          paymentId: res.razorpay_payment_id,
-          paymentStatus: 'Paid',
-          orderStatus: 'Pending',
-          createdAt: new Date()
-        };
-
-        // Save order
-        await addDoc(collection(db,"orders"), order);
-
-        // Reduce stock for each item (best-effort)
         try {
-          const { doc, getDoc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+          const order = {
+            customerName,
+            phone,
+            address,
+            items: cart,
+            total,
+            paymentId: res.razorpay_payment_id,
+            paymentStatus: 'Paid',
+            orderStatus: 'Pending',
+            createdAt: new Date()
+          };
+
+          // Save order and reduce stock in atomic transaction
+          const batch = writeBatch(db);
+          const ordersRef = collection(db, "orders");
+          
+          // Add order
+          const orderRef = doc(ordersRef);
+          batch.set(orderRef, order);
+          
+          // Update stock for each item
           for(const item of cart){
-            const ref = doc(db, 'products', item.id);
-            const snap = await getDoc(ref);
+            const productRef = doc(db, 'products', item.id);
+            const snap = await getDoc(productRef);
             if(snap.exists()){
               const currentStock = Number(snap.data().stock || 0);
               if(currentStock > 0){
-                await updateDoc(ref, { stock: currentStock - 1 });
+                batch.update(productRef, { stock: currentStock - 1 });
               }
             }
           }
-        } catch(e){ console.warn('Stock update failed', e); }
-
-        localStorage.removeItem('cart');
-        alert('Payment successful and order placed');
-        location.href = 'index.html';
+          
+          // Commit all changes atomically
+          await batch.commit();
+          
+          localStorage.removeItem('cart');
+          alert('Payment successful and order placed');
+          location.href = 'index.html';
+        } catch(e) {
+          console.error('Order processing failed:', e);
+          alert('Order could not be placed: ' + (e.message || 'Unknown error'));
+        }
       }
     };
 

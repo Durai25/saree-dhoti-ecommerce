@@ -13,9 +13,13 @@ import { getAuth } from
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID"
+  apiKey: "AIzaSyB1VCHUGWzxGyVhQaSONx3FUf8jWE5r5vA",
+  authDomain: "saree-dhoti-ecommerce.firebaseapp.com",
+  projectId: "saree-dhoti-ecommerce",
+  storageBucket: "saree-dhoti-ecommerce.firebasestorage.app",
+  messagingSenderId: "588900421752",
+  appId: "1:588900421752:web:e1f3db8403827beaab1d8d",
+  measurementId: "G-JN5CRYDKZW"
 };
 
 export const app = initializeApp(firebaseConfig);

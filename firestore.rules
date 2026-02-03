@@ -28,8 +28,8 @@ service cloud.firestore {
     // Admins: owner-only writes, admins can read
     match /admins/{adminId} {
       allow read: if request.auth != null && isAdmin(request.auth.token.email);
-      // WRITE is restricted to Owner - replace owner@yourdomain.com with real owner email
-      allow write: if request.auth != null && request.auth.token.email == 'owner@yourdomain.com';
+      // WRITE is restricted to Owner - replace thangaduraipazhani@gmail.com with real owner email
+      allow write: if request.auth != null && request.auth.token.email == 'thangaduraipazhani@gmail.com';
     }
 
     // Default: deny
