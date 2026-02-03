@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div id="adminRoot">Loading...</div>
+
+  <script type="module">
+    import { checkRole } from "../admin-js/auth.js";
+    import { auth } from "../js/firebase.js";
+
+    (async () => {
+      const role = await checkRole();
+      document.getElementById('adminRoot').innerHTML = `
+        <h2>Admin Dashboard (${role})</h2>
+        <nav>
+          <a href="dashboard.html">Home</a> |
+          <a href="products.html">Products</a> |
+          <a href="orders.html">Orders</a> |
+          <a href="analytics.html">Analytics</a> |
+          <a href="manage-admins.html">Manage Admins</a> |
+          <a href="#" id="logout">Logout</a>
+        </nav>
+        <div id="content">Welcome back</div>
+      `;
+      document.getElementById('logout').addEventListener('click', () => auth.signOut());
+    })();
+  </script>
+</body>
+</html> 

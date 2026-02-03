@@ -1,0 +1,20 @@
+<h2>Admin Login</h2>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+
+<script type="module">
+import { auth } from "../js/firebase.js";
+import { signInWithEmailAndPassword } from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+function login() {
+  signInWithEmailAndPassword(auth,
+    email.value, password.value)
+  .then(() => location.href="dashboard.html")
+  .catch(err => alert(err.message));
+}
+
+// expose to global scope so inline onclick can call it
+window.login = login;
+</script>

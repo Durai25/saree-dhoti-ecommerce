@@ -1,0 +1,71 @@
+import { db } from "./firebase.js";
+import { collection, onSnapshot } from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const productBox = document.getElementById("products");
+
+try{
+  onSnapshot(collection(db,"products"), snap => {
+    productBox.innerHTML = "";
+    if(snap.empty){
+      renderSampleProducts();
+      return;
+    }
+
+    snap.forEach(doc => {
+      const p = doc.data();
+
+      productBox.innerHTML += `
+        <div class="product">
+          <img src="${p.image}">
+          <h3>${p.name}</h3>
+          <p class="price">₹${p.price}</p>
+          <p class="stock ${p.stock>0? '':'out'}">${p.stock>0? 'In Stock':'Out of Stock'}</p>
+          <div class="actions">
+            <button ${p.stock<=0?"disabled":""}
+              onclick="addToCart({
+                id:'${doc.id}',
+                name:'${p.name}',
+                price:${Number(p.price)},
+                stock:${p.stock},
+                image:'${p.image||''}'
+              })">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      `;
+    });
+  });
+}catch(e){
+  console.warn('Products snapshot failed, rendering sample products', e);
+  renderSampleProducts();
+}
+
+function renderSampleProducts(){
+  const sample = [
+    {name:'Silk Saree - Maroon', price:2999, image:'https://picsum.photos/400/300?random=1', stock:5},
+    {name:'Dhoti Cotton', price:899, image:'https://picsum.photos/400/300?random=2', stock:12},
+    {name:'Silk Saree - Blue', price:3499, image:'https://picsum.photos/400/300?random=3', stock:0}
+  ];
+
+  productBox.innerHTML = '';
+  sample.forEach(p => {
+    productBox.innerHTML += `
+      <div class="product">
+        <img src="${p.image}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p class="price">₹${p.price}</p>
+        <p class="stock ${p.stock>0? '':'out'}">${p.stock>0? 'In Stock':'Out of Stock'}</p>
+        <div class="actions">
+          <button ${p.stock<=0?"disabled":""} onclick="alert('Add to cart (sample)')">Add to Cart</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+/*
+🧠 NOTE:
+- Any product added by admin appears here automatically
+*/
