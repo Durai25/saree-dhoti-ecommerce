@@ -23,7 +23,7 @@ window.payNow = async function(){
     const amountPaise = total * 100;
 
     const options = {
-      key: "B3FcI6vjB5rNl2VOgYk4lvnA",
+      key: "rzp_test_SBtcUas4MDwqRo",
       amount: amountPaise,
       currency: "INR",
       name: "Saree & Dhoti Store",
