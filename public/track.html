@@ -7,12 +7,112 @@
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <h2>📦 Track Your Order</h2>
-  <input id="phone" placeholder="Enter Phone Number">
-  <input id="orderId" placeholder="Order ID (optional)">
-  <button onclick="trackOrder()">Track Order</button>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-top">
+      <h1 class="logo">Saree & Dhoti Store</h1>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-link">🛒 Cart</a>
+        <a href="../admin/login.html" class="admin-link">Admin</a>
+      </div>
+    </div>
+    <nav class="navbar">
+      <a href="index.html">Home</a>
+      <a href="#" data-category="men">Men</a>
+      <a href="#" data-category="womens">Womens</a>
+      <a href="#" data-category="kids">Kids</a>
+    </nav>
+  </header>
 
-  <div id="result"></div>
+  <main>
+    <div class="container">
+      <h1>📦 Track Your Order</h1>
+      <div class="search-box">
+        <input type="text" id="phone" placeholder="Enter Phone Number">
+        <input type="text" id="orderId" placeholder="Order ID (optional)">
+        <button onclick="trackOrder()">Track Order</button>
+      </div>
+      <div id="result"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-logo">
+        <h2>Saree & Dhoti</h2>
+        <p class="trust-badge">⭐ Trusted by thousands of customers</p>
+      </div>
+      <div class="footer-columns">
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Sitemap</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="index.html">All Products</a></li>
+            <li><a href="#">Men's Collection</a></li>
+            <li><a href="#">Women's Collection</a></li>
+            <li><a href="#">Kids Collection</a></li>
+            <li><a href="#">New Arrivals</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Customer Service</h4>
+          <ul>
+            <li><a href="track.html">Track Order</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Support Hub</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Returns</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect With Us</h4>
+          <div class="social-links">
+            <a href="https://facebook.com" target="_blank">📘 Facebook</a>
+            <a href="https://instagram.com" target="_blank">📷 Instagram</a>
+            <a href="https://twitter.com" target="_blank">𝕏 Twitter</a>
+            <a href="https://wa.me/1234567890" target="_blank">💬 WhatsApp</a>
+          </div>
+          <div class="contact-info">
+            <p><strong>Email:</strong> <a href="mailto:support@example.com">support@example.com</a></p>
+            <p><strong>Phone:</strong> <a href="tel:+1234567890">+1 (234) 567-890</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-badges">
+      <div class="badge">
+        <div class="badge-icon">🚚</div>
+        <div class="badge-text"><strong>Fast Shipping</strong><br>Worldwide Delivery</div>
+      </div>
+      <div class="badge">
+        <div class="badge-icon">🔒</div>
+        <div class="badge-text"><strong>100% Secure</strong><br>Safe Checkout</div>
+      </div>
+      <div class="badge">
+        <div class="badge-icon">🤝</div>
+        <div class="badge-text"><strong>24/7 Support</strong><br>Customer Care</div>
+      </div>
+      <div class="badge">
+        <div class="badge-icon">⭐</div>
+        <div class="badge-text"><strong>Premium Quality</strong><br>Authentic Products</div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Saree & Dhoti Store. All rights reserved.</p>
+    </div>
+  </footer>
 
   <script type="module" src="../js/track.js"></script>
 </body>
