@@ -17,16 +17,21 @@ async function loadCustomers() {
   snap.forEach(doc => {
     const u = doc.data();
 
-    tbody.innerHTML += `
-      <tr>
-        <td>${u.email}</td>
-        <td>${u.createdAt?.toDate
-          ? u.createdAt.toDate().toLocaleDateString()
-          : "—"}</td>
-        <td>${u.emailVerified ? "Yes" : "No"}</td>
-      </tr>
-    `;
+tbody.innerHTML += `
+  <tr style="cursor:pointer"
+      onclick="viewOrders('${doc.id}', '${u.email}')">
+    <td>${u.email}</td>
+    <td>${u.createdAt?.toDate
+      ? u.createdAt.toDate().toLocaleDateString()
+      : "—"}</td>
+    <td>${u.emailVerified ? "Yes" : "No"}</td>
+  </tr>
+`;
   });
 }
 
 loadCustomers();
+window.viewOrders = function (userId, email) {
+  window.location =
+    `customer-orders.html?uid=${userId}&email=${encodeURIComponent(email)}`;
+};

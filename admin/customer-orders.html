@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Analytics</title>
+  <title>Customer Orders</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <h2>📊 Business Analytics</h2>
+  <h2>📊 Customer Orders</h2>
   <nav>
     <a href="dashboard.html">Home</a> |
     <a href="products.html">Products</a> |
@@ -18,15 +18,12 @@
     <a href="customer-orders.html">Customer Orders</a> |
     <a href="/public/index.html" id="logout">Logout</a>
   </nav>
-  <div id="stats">
-    <p>Total Revenue: ₹<span id="revenue">0</span></p>
-    <p>Total Orders: <span id="ordersCount">0</span></p>
-    <p>Total GST: ₹<span id="gst">0</span></p>
-  </div>
+<p id="customerEmail"></p>
 
-  <h3>🔥 Best Selling Products</h3>
-  <ul id="topProducts"></ul>
+<div id="orders"></div>
 
-  <script type="module" src="../admin-js/analytics.js"></script>
-</body>
-</html> 
+<script type="module" src="../admin-js/customer-orders.js"></script>
+<script type="module">
+import { checkAdminAccess } from "../admin-js/auth.js";
+checkAdminAccess().catch(()=>location.href="login.html");
+</script>
