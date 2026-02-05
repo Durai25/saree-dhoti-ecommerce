@@ -78,6 +78,23 @@ function renderSampleProducts() {
   });
 }
 
+window.addToCart = function (product) {
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  cart.push({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    image: product.image
+  });
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  alert("Added to cart");
+};
+
+
 /*
 🧠 NOTE:
 - Any product added by admin appears here automatically
