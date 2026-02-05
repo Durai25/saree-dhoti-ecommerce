@@ -60,6 +60,8 @@ try{
   renderSampleProducts();
 }
 
+function renderSampleProducts() {
+  const sample = []; // Define or import your sample products
   productBox.innerHTML = '';
   sample.forEach(p => {
     productBox.innerHTML += `

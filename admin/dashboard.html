@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="../css/style.css">
+  <script type="module" src="../admin-js/dashboard-summary.js"></script>
+
 </head>
 <body>
   <h2>Admin Dashboard</h2>
@@ -17,44 +19,48 @@
     <a href="/public/index.html" id="logout">Logout</a>
   </nav>
 
-  <section id="addProductSection">
-    <h3>➕ Add Product</h3>
-    <input id="pname" placeholder="Product Name">
-    <input id="price" type="number" placeholder="Price">
-    <input id="category" placeholder="Category">
-    <input id="stock" type="number" placeholder="Stock Quantity">
-    <input id="imageFile" type="file" accept="image/*">
-    <button onclick="addProduct()">Add Product</button>
-  </section>
+<!-- 📊 Visual Dashboard Summary -->
+<section class="dashboard-cards">
 
-  <hr>
+  <div class="card sales">
+    <div class="card-icon">💰</div>
+    <div class="card-info">
+      <h4>Total Sales</h4>
+      <p>₹ <span id="totalSales">0</span></p>
+    </div>
+  </div>
 
-  <h3>✏️ Edit/Delete Products</h3>
-  <div id="productList"></div>
+  <div class="card orders">
+    <div class="card-icon">🛍️</div>
+    <div class="card-info">
+      <h4>Total Orders</h4>
+      <p><span id="totalOrders">0</span></p>
+    </div>
+  </div>
 
-  <script type="module">
-    import { checkAdminAccess } from "../admin-js/auth.js";
-    import { auth } from "../js/firebase.js";
+  <div class="card items">
+    <div class="card-icon">📦</div>
+    <div class="card-info">
+      <h4>Items Sold</h4>
+      <p><span id="itemsSold">0</span></p>
+    </div>
+  </div>
 
-    (async () => {
-      const role = await checkAdminAccess();
-      // only owner/manager can add products
-      if (role === 'support') {
-        const section = document.getElementById('addProductSection');
-        if (section) section.remove();
-      }
-    })();
+  <div class="card customers">
+    <div class="card-icon">👥</div>
+    <div class="card-info">
+      <h4>Customers</h4>
+      <p><span id="totalCustomers">0</span></p>
+    </div>
+  </div>
 
-    document.getElementById('logout').addEventListener('click', () => auth.signOut());
-  </script>
+  <div class="card stock">
+    <div class="card-icon">🏷️</div>
+    <div class="card-info">
+      <h4>Total Stock</h4>
+      <p><span id="totalStock">0</span></p>
+    </div>
+  </div>
 
-  <script type="module" src="../admin-js/admin-products.js"></script>
+</section>
 </body>
-</html> 
-<script type="module">
-import { checkAdminAccess } from "../admin-js/auth.js";
-
-checkAdminAccess()
-  .then(role => console.log("Admin role:", role))
-  .catch(() => location.href="login.html");
-</script>

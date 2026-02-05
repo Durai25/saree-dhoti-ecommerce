@@ -390,3 +390,69 @@ ul{padding-left:18px}
   background-position: center;
   color: white;
 }
+/* ===== Admin Dashboard Cards ===== */
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 25px 0;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  border-radius: 14px;
+  color: #fff;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* Icon */
+.card-icon {
+  font-size: 36px;
+  background: rgba(255,255,255,0.2);
+  padding: 15px;
+  border-radius: 50%;
+}
+
+/* Text */
+.card-info h4 {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.card-info p {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+/* Color themes */
+.card.sales {
+  background: linear-gradient(135deg, #0f9d58, #34a853);
+}
+
+.card.orders {
+  background: linear-gradient(135deg, #1a73e8, #4285f4);
+}
+
+.card.items {
+  background: linear-gradient(135deg, #f9ab00, #fbbc04);
+}
+
+.card.customers {
+  background: linear-gradient(135deg, #8e24aa, #ab47bc);
+}
+
+.card.stock {
+  background: linear-gradient(135deg, #d93025, #ea4335);
+}
+
