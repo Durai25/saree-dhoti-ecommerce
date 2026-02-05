@@ -60,13 +60,6 @@ try{
   renderSampleProducts();
 }
 
-function renderSampleProducts(){
-  const sample = [
-    {name:'Silk Saree - Maroon', price:2999, image:'https://picsum.photos/400/300?random=1', stock:5},
-    {name:'Dhoti Cotton', price:899, image:'https://picsum.photos/400/300?random=2', stock:12},
-    {name:'Silk Saree - Blue', price:3499, image:'https://picsum.photos/400/300?random=3', stock:0}
-  ];
-
   productBox.innerHTML = '';
   sample.forEach(p => {
     productBox.innerHTML += `
