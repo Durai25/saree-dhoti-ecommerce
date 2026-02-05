@@ -1,0 +1,18 @@
+<h2>Customers</h2>
+
+<table border="1" cellpadding="8">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Registered On</th>
+      <th>Email Verified</th>
+    </tr>
+  </thead>
+  <tbody id="customers"></tbody>
+</table>
+
+<script type="module" src="../admin-js/customers.js"></script>
+<script type="module">
+import { checkAdminAccess } from "../admin-js/auth.js";
+checkAdminAccess().catch(()=>location.href="login.html");
+</script>
