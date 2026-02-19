@@ -8,7 +8,7 @@
 </head>
 <body>
   <h2>Products</h2>
-    <nav>
+  <nav>
     <a href="dashboard.html">Home</a> |
     <a href="products.html">Products</a> |
     <a href="orders.html">Orders</a> |
@@ -18,7 +18,8 @@
     <a href="customer-orders.html">Customer Orders</a> |
     <a href="/public/index.html" id="logout">Logout</a>
   </nav>
-<section id="addProductSection">
+  
+  <section id="addProductSection">
     <h3>➕ Add Product</h3>
     <input id="pname" placeholder="Product Name">
     <input id="price" type="number" placeholder="Price">
@@ -37,9 +38,9 @@
     import { checkAdminAccess } from "../admin-js/auth.js";
     import { auth } from "../js/firebase.js";
 
+    // Check admin access and hide add section for support role
     (async () => {
       const role = await checkAdminAccess();
-      // only owner/manager can add products
       if (role === 'support') {
         const section = document.getElementById('addProductSection');
         if (section) section.remove();
@@ -51,11 +52,5 @@
 
   <script type="module" src="../admin-js/admin-products.js"></script>
 </body>
-</html> 
-<script type="module">
-import { checkAdminAccess } from "../admin-js/auth.js";
+</html>
 
-checkAdminAccess()
-  .then(role => console.log("Admin role:", role))
-  .catch(() => location.href="login.html");
-</script>

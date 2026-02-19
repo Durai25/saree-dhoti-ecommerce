@@ -5,18 +5,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Vogant Fashions/Cart</title>
   <link rel="stylesheet" href="../css/style.css">
-  <script type="module" src="/js/banner.js"></script>
 </head>
 <body>
   <!-- Header -->
   <header class="header">
     <div class="header-top">
       <a href="index.html" class="logo-link">
-      <img src="logo.png" alt="Store Logo" class="logo-img">
-      <div class="brand-text">
-        <span class="brand-tagline">Fashion Atrract's</span>
-      </div>
-    </a>
+        <img src="logo.png" alt="Store Logo" class="logo-img">
+        <div class="brand-text">
+          <span class="brand-tagline">Fashion Attract's</span>
+        </div>
+      </a>
       <div class="header-actions">
         <a href="cart.html" class="cart-link">🛒 Cart</a>
         <a href="login.html">Login</a>
@@ -31,48 +30,18 @@
     </nav>
   </header>
 
-<main>
-  <div class="container">
-    <h1>Shopping Cart</h1>
-
-    <h2>Your Cart</h2>
-    <div id="cartItems"></div>
-
-    <h3 id="total">Total: ₹0</h3>
-
-    <a href="checkout.html" class="btn-checkout">
-      Proceed to Checkout
-    </a>
-  </div>
-</main>
-<script src="../js/cart.js"></script>
-
-<script>
-  const cartItems = document.getElementById("cartItems");
-  const totalEl = document.getElementById("total");
-
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let total = 0;
-
-  if (cart.length === 0) {
-    cartItems.innerHTML = "<p>Your cart is empty.</p>";
-  } else {
-    cart.forEach(p => {
-      total += Number(p.price);
-
-      cartItems.innerHTML += `
-        <div class="cart-item">
-          <img src="${p.image || ''}" width="60" alt="${p.name}">
-          <span>${p.name}</span>
-          <strong>₹${p.price}</strong>
-        </div>
-      `;
-    });
-  }
-
-  totalEl.innerText = "Total: ₹" + total;
-</script>
-
+  <main>
+    <div class="container">
+      <h1>Shopping Cart</h1>
+      <h2>Your Cart</h2>
+      <div id="cartItems"></div>
+      <h3 id="total">Total: ₹0</h3>
+      <div class="cart-actions">
+        <a href="checkout.html" class="btn-checkout">Proceed to Checkout</a>
+        <button onclick="clearCart()" class="btn-clear">Clear Cart</button>
+      </div>
+    </div>
+  </main>
 
   <!-- Footer -->
   <footer class="footer">
@@ -118,11 +87,11 @@
             <a href="https://facebook.com" target="_blank">📘 Facebook</a>
             <a href="https://instagram.com" target="_blank">📷 Instagram</a>
             <a href="https://twitter.com" target="_blank">𝕏 Twitter</a>
-            <a href="https://wa.me/1234567890" target="_blank">💬 WhatsApp</a>
+            <a href="https://wa.me/919944499333" target="_blank">💬 WhatsApp</a>
           </div>
           <div class="contact-info">
-            <p><strong>Email:</strong> <a href="mailto:support@example.com">support@example.com</a></p>
-            <p><strong>Phone:</strong> <a href="tel:+1234567890">+1 (234) 567-890</a></p>
+            <p><strong>Email:</strong> <a href="mailto:vogantfashions@gmail.com">vogantfashions@gmail.com</a></p>
+            <p><strong>Phone:</strong> <a href="tel:+919944499333">+91 99444 99333</a></p>
           </div>
         </div>
       </div>
@@ -148,22 +117,53 @@
     </div>
     <div class="footer-divider"></div>
     <div class="footer-bottom">
-      <p>&copy; 2026 Store Name. All rights reserved.</p>
+      <p>&copy; 2026 Vogant Fashions. All rights reserved.</p>
     </div>
   </footer>
 
-  <script src="../js/cart.js"></script>
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let total = 0;
-    cart.forEach(p => {
-      total += p.price;
-      cartItems.innerHTML += `<div>
-        <img src="${p.image||''}" width="60" alt="">
-        ${p.name} - ₹${p.price}
-      </div>`;
-    });
-    totalEl = document.getElementById('total');
-    totalEl.innerText = 'Total: ₹' + total;
+  <script>
+    const cartItemsEl = document.getElementById("cartItems");
+    const totalEl = document.getElementById("total");
+
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cartItemsEl.innerHTML = "";
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartItemsEl.innerHTML = "<p>Your cart is empty.</p>";
+      } else {
+        cart.forEach((item, index) => {
+          total += Number(item.price);
+          cartItemsEl.innerHTML += `
+            <div class="cart-item">
+              <img src="${item.image || ''}" width="60" alt="${item.name}">
+              <span>${item.name}</span>
+              <strong>₹${item.price}</strong>
+              <button onclick="removeFromCart(${index})" class="btn-remove">Remove</button>
+            </div>
+          `;
+        });
+      }
+      totalEl.innerText = "Total: ₹" + total;
+    }
+
+    window.removeFromCart = function(index) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    };
+
+    window.clearCart = function() {
+      if(confirm("Are you sure you want to clear the cart?")) {
+        localStorage.removeItem("cart");
+        renderCart();
+      }
+    };
+
+    renderCart();
   </script>
 </body>
-</html> 
+</html>
+
